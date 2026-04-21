@@ -24,23 +24,25 @@ const Login = () => {
 
     return (
         <div className="container mt-5" style={{ maxWidth: '400px' }}>
-            <div className="card shadow">
+            <div className="card shadow" style={{ borderRadius: '12px', border: 'none' }}>
                 <div className="card-body">
-                    <h2 className="text-center mb-4">{t('connexion')}</h2>
-                    {error && <div className="alert alert-danger">{error}</div>}
+                    <h2 className="text-center mb-4" style={{ color: '#C4552A' }}>{t('connexion')}</h2>
+                    {error && <div className="alert" style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none' }}>{error}</div>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <label className="form-label">{t('email')}</label>
-                            <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <label className="form-label" style={{ color: '#6B3D2E' }}>{t('email')}</label>
+                            <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ borderColor: '#E8C99A' }} />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">{t('mot_de_passe')}</label>
-                            <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <label className="form-label" style={{ color: '#6B3D2E' }}>{t('mot_de_passe')}</label>
+                            <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ borderColor: '#E8C99A' }} />
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">{t('se_connecter')}</button>
+                        <button type="submit" className="btn w-100" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                            {t('se_connecter')}
+                        </button>
                     </form>
                     <div className="text-center mt-3">
-                        <Link to="/register">{t('pas_de_compte')}</Link>
+                        <Link to="/register" style={{ color: '#C4552A' }}>{t('pas_de_compte')}</Link>
                     </div>
                 </div>
             </div>

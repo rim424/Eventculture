@@ -118,7 +118,7 @@ const EditEvent = () => {
     if (loading) {
         return (
             <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="spinner-border" style={{ color: '#C4552A' }} role="status"></div>
                 <p className="mt-2">{t('chargement_evenement')}</p>
             </div>
         );
@@ -126,16 +126,16 @@ const EditEvent = () => {
 
     return (
         <div className="container mt-4" style={{ maxWidth: '700px' }}>
-            <div className="card shadow">
-                <div className="card-header bg-warning">
+            <div className="card shadow" style={{ borderRadius: '12px', border: 'none' }}>
+                <div className="card-header" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '12px 12px 0 0' }}>
                     <h3 className="mb-0">{t('modifier_evenement')}</h3>
                 </div>
                 <div className="card-body">
-                    {error && <div className="alert alert-danger">{error}</div>}
+                    {error && <div className="alert" style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>{error}</div>}
                     
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('titre')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('titre')} *</label>
                             <input 
                                 type="text" 
                                 className="form-control" 
@@ -143,23 +143,25 @@ const EditEvent = () => {
                                 value={formData.titre} 
                                 onChange={handleChange} 
                                 required 
+                                style={{ borderColor: '#E8C99A' }}
                             />
                         </div>
                         
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('description')}</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('description')}</label>
                             <textarea 
                                 className="form-control" 
                                 name="description" 
                                 rows="4" 
                                 value={formData.description} 
                                 onChange={handleChange}
+                                style={{ borderColor: '#E8C99A' }}
                             ></textarea>
                         </div>
                         
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('date_debut')} *</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('date_debut')} *</label>
                                 <input 
                                     type="datetime-local" 
                                     className="form-control" 
@@ -167,22 +169,24 @@ const EditEvent = () => {
                                     value={formData.date_debut} 
                                     onChange={handleChange} 
                                     required 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('date_fin')}</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('date_fin')}</label>
                                 <input 
                                     type="datetime-local" 
                                     className="form-control" 
                                     name="date_fin" 
                                     value={formData.date_fin} 
                                     onChange={handleChange} 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                         </div>
                         
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('lieu')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('lieu')} *</label>
                             <input 
                                 type="text" 
                                 className="form-control" 
@@ -190,12 +194,13 @@ const EditEvent = () => {
                                 value={formData.lieu} 
                                 onChange={handleChange} 
                                 required 
+                                style={{ borderColor: '#E8C99A' }}
                             />
                         </div>
                         
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('prix')} (DH)</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('prix')} (DH)</label>
                                 <input 
                                     type="number" 
                                     className="form-control" 
@@ -204,10 +209,11 @@ const EditEvent = () => {
                                     onChange={handleChange} 
                                     min="0" 
                                     step="0.01"
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('capacite')} *</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('capacite')} *</label>
                                 <input 
                                     type="number" 
                                     className="form-control" 
@@ -216,6 +222,7 @@ const EditEvent = () => {
                                     onChange={handleChange} 
                                     min="1" 
                                     required 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                         </div>
@@ -223,7 +230,7 @@ const EditEvent = () => {
                         {/* Affichage de l'image actuelle */}
                         {currentImage && (
                             <div className="mb-3">
-                                <label className="form-label fw-bold">{t('image_actuelle')}</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('image_actuelle')}</label>
                                 <div>
                                     <img src={currentImage} alt={t('image_actuelle')} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
                                 </div>
@@ -232,12 +239,13 @@ const EditEvent = () => {
                         
                         {/* Champ pour upload nouvelle photo */}
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('nouvelle_photo')}</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('nouvelle_photo')}</label>
                             <input 
                                 type="file" 
                                 className="form-control" 
                                 accept="image/*"
                                 onChange={handleFileChange}
+                                style={{ borderColor: '#E8C99A' }}
                             />
                             {imagePreview && (
                                 <div className="mt-2">
@@ -247,13 +255,14 @@ const EditEvent = () => {
                         </div>
                         
                         <div className="mb-4">
-                            <label className="form-label fw-bold">{t('categorie')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('categorie')} *</label>
                             <select 
                                 className="form-select" 
                                 name="id_categorie" 
                                 value={formData.id_categorie} 
                                 onChange={handleChange} 
                                 required
+                                style={{ borderColor: '#E8C99A' }}
                             >
                                 <option value="">{t('selectionner_categorie')}</option>
                                 {categories.map(cat => (
@@ -265,10 +274,10 @@ const EditEvent = () => {
                         </div>
                         
                         <div className="d-flex gap-2">
-                            <button type="submit" className="btn btn-warning flex-grow-1" disabled={submitting}>
+                            <button type="submit" className="btn flex-grow-1" disabled={submitting} style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
                                 {submitting ? t('modification_en_cours') : t('modifier_evenement_btn')}
                             </button>
-                            <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>
+                            <button type="button" className="btn" onClick={() => navigate(-1)} style={{ backgroundColor: '#E8C99A', color: '#6B3D2E', border: 'none', borderRadius: '8px' }}>
                                 {t('annuler')}
                             </button>
                         </div>

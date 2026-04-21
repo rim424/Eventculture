@@ -68,7 +68,7 @@ const EventDetail = () => {
     if (loading) {
         return (
             <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="spinner-border" style={{ color: '#C4552A' }} role="status"></div>
                 <p>{t('chargement_evenement')}</p>
             </div>
         );
@@ -77,8 +77,10 @@ const EventDetail = () => {
     if (!event) {
         return (
             <div className="text-center mt-5">
-                <h2>{t('evenement_non_trouve')}</h2>
-                <button className="btn btn-primary mt-3" onClick={() => navigate('/')}>{t('retour_accueil')}</button>
+                <h2 style={{ color: '#C4552A' }}>{t('evenement_non_trouve')}</h2>
+                <button className="btn mt-3" onClick={() => navigate('/')} style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                    {t('retour_accueil')}
+                </button>
             </div>
         );
     }
@@ -88,57 +90,59 @@ const EventDetail = () => {
 
     return (
         <div className="container mt-4">
-            <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>← {t('retour')}</button>
+            <button className="btn mb-3" onClick={() => navigate(-1)} style={{ backgroundColor: '#E8C99A', color: '#6B3D2E', border: 'none', borderRadius: '8px' }}>
+                ← {t('retour')}
+            </button>
 
             <div className="row">
                 <div className="col-md-12">
-                    <h1 className="mb-3">{event.titre}</h1>
+                    <h1 className="mb-3" style={{ color: '#C4552A' }}>{event.titre}</h1>
 
                     {event.categorie && (
-                        <span className="badge bg-info mb-3 d-inline-block">{event.categorie.nom}</span>
+                        <span className="badge mb-3 d-inline-block" style={{ backgroundColor: '#E8C99A', color: '#6B3D2E' }}>{event.categorie.nom}</span>
                     )}
 
-                    <div className="card bg-light p-3 mb-4">
-                        <p className="mb-0">{event.description}</p>
+                    <div className="card p-3 mb-4" style={{ backgroundColor: '#E8C99A', border: 'none', borderRadius: '12px' }}>
+                        <p className="mb-0" style={{ color: '#6B3D2E' }}>{event.description}</p>
                     </div>
 
-                    <hr />
+                    <hr style={{ borderColor: '#E8C99A' }} />
 
                     <div className="row">
                         <div className="col-md-6">
-                            <p><strong>{t('lieu')} :</strong> {event.lieu}</p>
-                            <p><strong>{t('date')} :</strong> {new Date(event.date_debut).toLocaleDateString()} à {new Date(event.date_debut).toLocaleTimeString()}</p>
+                            <p style={{ color: '#6B3D2E' }}><strong>{t('lieu')} :</strong> {event.lieu}</p>
+                            <p style={{ color: '#6B3D2E' }}><strong>{t('date')} :</strong> {new Date(event.date_debut).toLocaleDateString()} à {new Date(event.date_debut).toLocaleTimeString()}</p>
                         </div>
                         <div className="col-md-6">
-                            <p><strong>{t('prix')} :</strong> {event.prix} DH</p>
-                            <p><strong>{t('places_restantes')} :</strong> {event.places_restantes} / {event.capacite}</p>
+                            <p style={{ color: '#6B3D2E' }}><strong>{t('prix')} :</strong> {event.prix} DH</p>
+                            <p style={{ color: '#6B3D2E' }}><strong>{t('places_restantes')} :</strong> {event.places_restantes} / {event.capacite}</p>
                         </div>
                     </div>
 
                     {/* Boutons Modifier et Supprimer pour admin ou organisateur propriétaire */}
                     {canModify && (
                         <div className="mt-2">
-                            <Link to={`/events/edit/${event.id_evenement}`} className="btn btn-warning me-2">
-                                 {t('modifier')}
+                            <Link to={`/events/edit/${event.id_evenement}`} className="btn me-2" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                                {t('modifier')}
                             </Link>
-                            <button onClick={handleDelete} className="btn btn-danger">
-                                 {t('supprimer')}
+                            <button onClick={handleDelete} className="btn" style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                                {t('supprimer')}
                             </button>
                         </div>
                     )}
 
                     {success && (
-                        <div className="alert alert-success mt-3">{success}</div>
+                        <div className="alert mt-3" style={{ backgroundColor: '#5A8A3A', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>{success}</div>
                     )}
                     {error && (
-                        <div className="alert alert-danger mt-3">{error}</div>
+                        <div className="alert mt-3" style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>{error}</div>
                     )}
 
                     {event.places_restantes > 0 ? (
-                        <form onSubmit={handleReservation} className="mt-4 p-3 bg-light rounded">
+                        <form onSubmit={handleReservation} className="mt-4 p-3 rounded" style={{ backgroundColor: '#E8C99A' }}>
                             <div className="row g-3 align-items-end">
                                 <div className="col-6">
-                                    <label className="form-label fw-bold">{t('nombre_places')}</label>
+                                    <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('nombre_places')}</label>
                                     <input 
                                         type="number" 
                                         className="form-control" 
@@ -147,17 +151,18 @@ const EventDetail = () => {
                                         min="1" 
                                         max={event.places_restantes} 
                                         required 
+                                        style={{ borderColor: '#C4552A' }}
                                     />
                                 </div>
                                 <div className="col-6">
-                                    <button type="submit" className="btn btn-success w-100">
+                                    <button type="submit" className="btn w-100" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
                                         {t('reserver')}
                                     </button>
                                 </div>
                             </div>
                         </form>
                     ) : (
-                        <button className="btn btn-secondary w-100 mt-3" disabled>
+                        <button className="btn w-100 mt-3" disabled style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
                             {t('complet')}
                         </button>
                     )}

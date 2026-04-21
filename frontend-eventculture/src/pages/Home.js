@@ -45,7 +45,6 @@ const Home = () => {
             let data = response.data?.data || response.data;
             if (!Array.isArray(data)) data = [];
             
-            // ✅ Utiliser la vraie photo de l'événement si elle existe, sinon une image par défaut
             const eventsWithData = data.map((event) => ({
                 ...event,
                 displayImage: event.image || getImageForEvent(event.titre)
@@ -61,7 +60,7 @@ const Home = () => {
     if (loading) {
         return (
             <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="spinner-border" style={{ color: '#C4552A' }} role="status"></div>
                 <p>{t('chargement')}</p>
             </div>
         );
@@ -69,49 +68,76 @@ const Home = () => {
 
     return (
         <div className="container mt-4">
-            <h1 className="text-center mb-4">{t('evenements_culturels')}</h1>
-            <p className="text-center text-muted mb-5">{t('decouvrez_reservez')}</p>
+            {/* ✅ HERO SECTION AJOUTÉE */}
+            <div className="hero-section text-center py-5 mb-5" style={{
+                background: 'linear-gradient(135deg, #6B3D2E 0%, #C4552A 100%)',
+                borderRadius: '0 0 50px 50px',
+                color: '#FDF6EE'
+            }}>
+                <h1 className="display-3 fw-bold mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+                    {t('evenements_culturels')}
+                </h1>
+                <p className="lead mb-4 px-3">{t('decouvrez_reservez')}</p>
+                <button 
+                    className="btn btn-light rounded-pill px-4 py-2 fw-semibold"
+                    onClick={() => {
+                        const eventsSection = document.getElementById('events-section');
+                        if (eventsSection) eventsSection.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ color: '#6B3D2E' }}
+                >
+                    Explorer les événements
+                </button>
+            </div>
 
-            {evenements.length === 0 ? (
-                <div className="alert alert-info text-center">{t('aucun_evenement')}</div>
-            ) : (
-                <div className="row">
-                    {evenements.map((event) => (
-                        <div className="col-md-4 col-lg-3 mb-4" key={event.id_evenement}>
-                            <div className="card h-100 shadow-sm">
-                                <img 
-                                    src={event.image ? `http://localhost:8000${event.image}` : getImageForEvent(event.titre)} 
-                                    className="card-img-top" 
-                                    alt={event.titre}
-                                    style={{ height: '180px', objectFit: 'cover' }}
-                                    onError={(e) => {
-                                        e.target.src = getImageForEvent(event.titre);
-                                    }}
-                                />
-                                <div className="card-body">
-                                    <h5 className="card-title">{event.titre}</h5>
-                                    <p className="card-text text-muted small">
-                                        {event.categorie?.nom && (
-                                            <span className="badge bg-secondary">{event.categorie.nom}</span>
-                                        )}
-                                    </p>
-                                    <p className="card-text">
-                                        <strong>{t('lieu')} :</strong> {event.lieu}<br />
-                                        <strong>{t('date')} :</strong> {new Date(event.date_debut).toLocaleDateString()}<br />
-                                        <strong>{t('prix')} :</strong> {event.prix} DH<br />
-                                        <strong>{t('places')} :</strong> {event.places_restantes} / {event.capacite}
-                                    </p>
-                                </div>
-                                <div className="card-footer bg-white border-0 pb-3">
-                                    <Link to={`/events/${event.id_evenement}`} className="btn btn-primary w-100">
-                                        {t('voir_details')}
-                                    </Link>
+            {/* Section des événements */}
+            <div id="events-section">
+                <h1 className="text-center mb-4" style={{ color: '#C4552A' }}>{t('evenements_culturels')}</h1>
+                <p className="text-center mb-5" style={{ color: '#6B3D2E' }}>{t('decouvrez_reservez')}</p>
+
+                {evenements.length === 0 ? (
+                    <div className="alert text-center" style={{ backgroundColor: '#E8C99A', color: '#6B3D2E', border: 'none' }}>
+                        {t('aucun_evenement')}
+                    </div>
+                ) : (
+                    <div className="row">
+                        {evenements.map((event) => (
+                            <div className="col-md-4 col-lg-3 mb-4" key={event.id_evenement}>
+                                <div className="card h-100 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
+                                    <img 
+                                        src={event.image ? `http://localhost:8000${event.image}` : getImageForEvent(event.titre)} 
+                                        className="card-img-top" 
+                                        alt={event.titre}
+                                        style={{ height: '180px', objectFit: 'cover' }}
+                                        onError={(e) => {
+                                            e.target.src = getImageForEvent(event.titre);
+                                        }}
+                                    />
+                                    <div className="card-body">
+                                        <h5 className="card-title" style={{ color: '#6B3D2E' }}>{event.titre}</h5>
+                                        <p className="card-text text-muted small">
+                                            {event.categorie?.nom && (
+                                                <span className="badge" style={{ backgroundColor: '#E8C99A', color: '#6B3D2E' }}>{event.categorie.nom}</span>
+                                            )}
+                                        </p>
+                                        <p className="card-text" style={{ color: '#6B3D2E' }}>
+                                            <strong>{t('lieu')} :</strong> {event.lieu}<br />
+                                            <strong>{t('date')} :</strong> {new Date(event.date_debut).toLocaleDateString()}<br />
+                                            <strong>{t('prix')} :</strong> {event.prix} DH<br />
+                                            <strong>{t('places')} :</strong> {event.places_restantes} / {event.capacite}
+                                        </p>
+                                    </div>
+                                    <div className="card-footer bg-white border-0 pb-3">
+                                        <Link to={`/events/${event.id_evenement}`} className="btn w-100" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                                            {t('voir_details')}
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;  // ← AJOUT
+
 
 class Evenement extends Model
 {
     use HasFactory;
-
-     protected $table = 'evenements';
+    use SoftDeletes;  // ← AJOUT
+    
+    protected $table = 'evenements';
     protected $primaryKey = 'id_evenement';
 
     protected $fillable = [
@@ -18,13 +21,13 @@ class Evenement extends Model
         'date_creation', 'id_organisateur', 'id_categorie'
     ];
 
-        protected $casts = [
+    protected $casts = [
         'date_debut' => 'datetime',
         'date_fin' => 'datetime',
         'date_creation' => 'datetime',
     ];
 
-        // Relation avec l'organisateur (utilisateur)
+    // Relation avec l'organisateur (utilisateur)
     public function organisateur()
     {
         return $this->belongsTo(User::class, 'id_organisateur', 'id_utilisateur');
@@ -35,7 +38,8 @@ class Evenement extends Model
     {
         return $this->belongsTo(Categorie::class, 'id_categorie', 'id_categorie');
     }
-     // Relation avec les réservations
+    
+    // Relation avec les réservations
     public function reservations()
     {
         return $this->hasMany(Reservation::class, 'id_evenement', 'id_evenement');

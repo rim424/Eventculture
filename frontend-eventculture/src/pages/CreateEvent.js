@@ -90,16 +90,16 @@ const CreateEvent = () => {
 
     return (
         <div className="container mt-4" style={{ maxWidth: '700px' }}>
-            <div className="card shadow">
-                <div className="card-header bg-primary text-white">
+            <div className="card shadow" style={{ borderRadius: '12px', border: 'none' }}>
+                <div className="card-header" style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '12px 12px 0 0' }}>
                     <h3 className="mb-0">{t('creer_evenement')}</h3>
                 </div>
                 <div className="card-body">
-                    {error && <div className="alert alert-danger">{error}</div>}
+                    {error && <div className="alert" style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>{error}</div>}
                     
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('titre')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('titre')} *</label>
                             <input 
                                 type="text" 
                                 className="form-control" 
@@ -108,11 +108,12 @@ const CreateEvent = () => {
                                 onChange={handleChange} 
                                 placeholder={t('exemple_titre')}
                                 required 
+                                style={{ borderColor: '#E8C99A' }}
                             />
                         </div>
                         
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('description')}</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('description')}</label>
                             <textarea 
                                 className="form-control" 
                                 name="description" 
@@ -120,12 +121,13 @@ const CreateEvent = () => {
                                 value={formData.description} 
                                 onChange={handleChange}
                                 placeholder={t('exemple_description')}
+                                style={{ borderColor: '#E8C99A' }}
                             ></textarea>
                         </div>
                         
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('date_debut')} *</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('date_debut')} *</label>
                                 <input 
                                     type="datetime-local" 
                                     className="form-control" 
@@ -133,22 +135,24 @@ const CreateEvent = () => {
                                     value={formData.date_debut} 
                                     onChange={handleChange} 
                                     required 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('date_fin')}</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('date_fin')}</label>
                                 <input 
                                     type="datetime-local" 
                                     className="form-control" 
                                     name="date_fin" 
                                     value={formData.date_fin} 
                                     onChange={handleChange} 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                         </div>
                         
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('lieu')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('lieu')} *</label>
                             <input 
                                 type="text" 
                                 className="form-control" 
@@ -157,12 +161,13 @@ const CreateEvent = () => {
                                 onChange={handleChange}
                                 placeholder={t('exemple_lieu')}
                                 required 
+                                style={{ borderColor: '#E8C99A' }}
                             />
                         </div>
                         
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('prix')} (DH)</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('prix')} (DH)</label>
                                 <input 
                                     type="number" 
                                     className="form-control" 
@@ -171,10 +176,11 @@ const CreateEvent = () => {
                                     onChange={handleChange} 
                                     min="0" 
                                     step="0.01"
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                             <div className="col-md-6 mb-3">
-                                <label className="form-label fw-bold">{t('capacite')} *</label>
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('capacite')} *</label>
                                 <input 
                                     type="number" 
                                     className="form-control" 
@@ -183,18 +189,20 @@ const CreateEvent = () => {
                                     onChange={handleChange} 
                                     min="1" 
                                     required 
+                                    style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>
                         </div>
                         
                         {/* Champ pour l'upload de photo */}
                         <div className="mb-3">
-                            <label className="form-label fw-bold">{t('photo')}</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('photo')}</label>
                             <input 
                                 type="file" 
                                 className="form-control" 
                                 accept="image/*"
                                 onChange={handleFileChange}
+                                style={{ borderColor: '#E8C99A' }}
                             />
                             {imagePreview && (
                                 <div className="mt-2">
@@ -204,13 +212,14 @@ const CreateEvent = () => {
                         </div>
                         
                         <div className="mb-4">
-                            <label className="form-label fw-bold">{t('categorie')} *</label>
+                            <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>{t('categorie')} *</label>
                             <select 
                                 className="form-select" 
                                 name="id_categorie" 
                                 value={formData.id_categorie} 
                                 onChange={handleChange} 
                                 required
+                                style={{ borderColor: '#E8C99A' }}
                             >
                                 <option value="">{t('selectionner_categorie')}</option>
                                 {categories.map(cat => (
@@ -222,10 +231,10 @@ const CreateEvent = () => {
                         </div>
                         
                         <div className="d-flex gap-2">
-                            <button type="submit" className="btn btn-primary flex-grow-1" disabled={loading}>
+                            <button type="submit" className="btn flex-grow-1" disabled={loading} style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
                                 {loading ? t('creation_en_cours') : t('creer_evenement_btn')}
                             </button>
-                            <button type="button" className="btn btn-secondary" onClick={() => navigate('/')}>
+                            <button type="button" className="btn" onClick={() => navigate('/')} style={{ backgroundColor: '#E8C99A', color: '#6B3D2E', border: 'none', borderRadius: '8px' }}>
                                 {t('annuler')}
                             </button>
                         </div>

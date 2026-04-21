@@ -52,4 +52,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/organisateur', [DashboardController::class, 'organisateurStats']);
     Route::get('/dashboard/admin', [DashboardController::class, 'adminStats']);
     Route::post('/evenements/{id}/upload-image', [EvenementController::class, 'uploadImage'])->middleware('auth:sanctum');
+   
 });

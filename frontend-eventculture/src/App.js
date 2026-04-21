@@ -11,6 +11,8 @@ import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
 import EvenementsEnAttente from './pages/EvenementsEnAttente';
 import { LangProvider } from './contexts/LangContext';
+import DashboardOrganisateur from './pages/DashboardOrganisateur';
+import DashboardAdmin from './pages/DashboardAdmin';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -29,6 +31,9 @@ function App() {
                     <Route path="/events/create" element={<CreateEvent />} />
                     <Route path="/events/edit/:id" element={<EditEvent />} />
                     <Route path="/admin/evenements/attente" element={<EvenementsEnAttente />} />
+                    <Route path="/dashboard/organisateur" element={<DashboardOrganisateur />} />
+                    <Route path="/dashboard/admin" element={<DashboardAdmin />} />
+                    
                 </Routes>
             </Router>
         </AuthProvider>

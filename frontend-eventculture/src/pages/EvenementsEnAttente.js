@@ -61,7 +61,7 @@ const EvenementsEnAttente = () => {
     if (loading) {
         return (
             <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="spinner-border" style={{ color: '#C4552A' }} role="status"></div>
                 <p>{t('chargement_attente')}</p>
             </div>
         );
@@ -69,24 +69,26 @@ const EvenementsEnAttente = () => {
 
     return (
         <div className="container mt-4">
-            <h1 className="text-center mb-4">{t('evenements_attente')}</h1>
+            <h1 className="text-center mb-4" style={{ color: '#C4552A' }}>{t('evenements_attente')}</h1>
             
             {message && (
-                <div className="alert alert-success text-center">{message}</div>
+                <div className="alert text-center" style={{ backgroundColor: '#5A8A3A', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                    {message}
+                </div>
             )}
 
             {evenements.length === 0 ? (
-                <div className="alert alert-info text-center">
+                <div className="alert text-center" style={{ backgroundColor: '#E8C99A', color: '#6B3D2E', border: 'none', borderRadius: '8px' }}>
                     {t('aucun_evenement_attente')}
                 </div>
             ) : (
                 <div className="row">
                     {evenements.map((event) => (
                         <div className="col-md-6 col-lg-4 mb-4" key={event.id_evenement}>
-                            <div className="card shadow-sm">
+                            <div className="card shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
                                 <div className="card-body">
-                                    <h5 className="card-title">{event.titre}</h5>
-                                    <p className="card-text text-muted">
+                                    <h5 className="card-title" style={{ color: '#C4552A' }}>{event.titre}</h5>
+                                    <p className="card-text" style={{ color: '#6B3D2E' }}>
                                         <strong>{t('organisateur')} :</strong> {event.organisateur?.prenom} {event.organisateur?.nom}<br />
                                         <strong>{t('lieu')} :</strong> {event.lieu}<br />
                                         <strong>{t('date')} :</strong> {new Date(event.date_debut).toLocaleDateString()}<br />
@@ -95,14 +97,16 @@ const EvenementsEnAttente = () => {
                                     </p>
                                     <div className="d-flex gap-2">
                                         <button 
-                                            className="btn btn-success flex-grow-1"
+                                            className="btn flex-grow-1"
                                             onClick={() => validerEvenement(event.id_evenement)}
+                                            style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}
                                         >
                                             {t('valider')}
                                         </button>
                                         <button 
-                                            className="btn btn-danger flex-grow-1"
+                                            className="btn flex-grow-1"
                                             onClick={() => refuserEvenement(event.id_evenement)}
+                                            style={{ backgroundColor: '#A84420', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}
                                         >
                                             {t('refuser')}
                                         </button>
