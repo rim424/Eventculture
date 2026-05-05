@@ -25,7 +25,9 @@ const EditEvent = () => {
         lieu: '',
         prix: 0,
         capacite: 1,
-        id_categorie: ''
+        id_categorie: '',
+        latitude: '',
+        longitude: ''
     });
 
     useEffect(() => {
@@ -49,7 +51,9 @@ const EditEvent = () => {
                 lieu: event.lieu || '',
                 prix: event.prix || 0,
                 capacite: event.capacite || 1,
-                id_categorie: event.id_categorie || ''
+                id_categorie: event.id_categorie || '',
+                latitude: event.latitude || '',
+                longitude: event.longitude || ''
             });
             // Stocker l'URL complète de l'image pour l'affichage
             setCurrentImage(event.image ? `http://localhost:8000${event.image}` : '');
@@ -222,6 +226,34 @@ const EditEvent = () => {
                                     onChange={handleChange} 
                                     min="1" 
                                     required 
+                                    style={{ borderColor: '#E8C99A' }}
+                                />
+                            </div>
+                        </div>
+                        
+                        {/* ✅ Champs Latitude et Longitude AJOUTÉS */}
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>Latitude</label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    name="latitude" 
+                                    value={formData.latitude} 
+                                    onChange={handleChange}
+                                    placeholder="Ex: 33.5731"
+                                    style={{ borderColor: '#E8C99A' }}
+                                />
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>Longitude</label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    name="longitude" 
+                                    value={formData.longitude} 
+                                    onChange={handleChange}
+                                    placeholder="Ex: -7.5898"
                                     style={{ borderColor: '#E8C99A' }}
                                 />
                             </div>

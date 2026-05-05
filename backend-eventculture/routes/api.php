@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\CommentaireController;
 use App\Http\Controllers\API\CategorieController;
 use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\API\XmlController;
 
 // Routes publiques
 Route::post('/register', [AuthController::class, 'register']);
@@ -52,5 +53,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/organisateur', [DashboardController::class, 'organisateurStats']);
     Route::get('/dashboard/admin', [DashboardController::class, 'adminStats']);
     Route::post('/evenements/{id}/upload-image', [EvenementController::class, 'uploadImage'])->middleware('auth:sanctum');
+
+    // Routes XML (admin seulement)
+    Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/export/xml', [XmlController::class, 'export'])->middleware('auth:sanctum');
+    Route::post('/import/xml', [XmlController::class, 'import'])->middleware('auth:sanctum');
+});
    
 });

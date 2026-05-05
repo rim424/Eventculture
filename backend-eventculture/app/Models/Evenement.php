@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;  // ← AJOUT
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Evenement extends Model
 {
     use HasFactory;
-    use SoftDeletes;  // ← AJOUT
+    use SoftDeletes;
     
     protected $table = 'evenements';
     protected $primaryKey = 'id_evenement';
@@ -18,7 +17,8 @@ class Evenement extends Model
     protected $fillable = [
         'titre', 'description', 'date_debut', 'date_fin', 'lieu', 
         'prix', 'capacite', 'places_restantes', 'image', 'statut', 
-        'date_creation', 'id_organisateur', 'id_categorie'
+        'date_creation', 'id_organisateur', 'id_categorie',
+        'latitude', 'longitude'  // ← AJOUT
     ];
 
     protected $casts = [

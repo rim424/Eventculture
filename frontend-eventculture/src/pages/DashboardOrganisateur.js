@@ -4,6 +4,27 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
 import api from '../services/api';
 
+// ✅ IMPORT CHART.JS
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const DashboardOrganisateur = () => {
     const navigate = useNavigate();
     const { isAuthenticated, hasRole } = useAuth();
@@ -111,29 +132,40 @@ const DashboardOrganisateur = () => {
                 </div>
             </div>
 
-            {/* Graphique des réservations par mois */}
-            <div className="row mb-4">
-                <div className="col-md-12">
-                    <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
-                        <h5 className="mb-3" style={{ color: '#C4552A' }}>Réservations par mois</h5>
-                        {stats?.reservations_par_mois?.length === 0 ? (
-                            <p className="text-muted">Aucune donnée</p>
-                        ) : (
-                            stats?.reservations_par_mois?.map((item, index) => (
-                                <div key={index} className="mb-2">
-                                    <div className="d-flex justify-content-between">
-                                        <span style={{ color: '#6B3D2E' }}>Mois {item.mois}</span>
-                                        <span style={{ color: '#C4552A' }}>{item.total}</span>
-                                    </div>
-                                    <div className="progress" style={{ height: '8px' }}>
-                                        <div className="progress-bar" style={{ width: `${(item.total / Math.max(...stats.reservations_par_mois.map(i => i.total), 1)) * 100}%`, backgroundColor: '#C4552A' }}></div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+            {/* ✅ Graphique Chart.js – Réservations par mois */}
+            {stats?.reservations_par_mois && stats.reservations_par_mois.length > 0 ? (
+                <div className="row mb-4">
+                    <div className="col-md-12">
+                        <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+                            <h5 className="mb-3" style={{ color: '#C4552A' }}>📊 Réservations par mois</h5>
+                            <Bar
+                                data={{
+                                    labels: stats.reservations_par_mois.map(item => `Mois ${item.mois}`),
+                                    datasets: [{
+                                        label: 'Nombre de réservations',
+                                        data: stats.reservations_par_mois.map(item => item.total),
+                                        backgroundColor: '#C4552A',
+                                        borderRadius: 8,
+                                    }]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: { legend: { position: 'top' } }
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="row mb-4">
+                    <div className="col-md-12">
+                        <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+                            <h5 className="mb-3" style={{ color: '#C4552A' }}>📊 Réservations par mois</h5>
+                            <p className="text-muted">Aucune donnée de réservation disponible</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Liste des événements */}
             <h3 className="mb-3" style={{ color: '#6B3D2E' }}>Mes événements</h3>

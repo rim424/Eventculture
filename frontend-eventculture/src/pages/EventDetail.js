@@ -4,6 +4,17 @@ import { getEvenement, reserver } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
 import api from '../services/api';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Corrige l'affichage par défaut des marqueurs
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -15,9 +26,16 @@ const EventDetail = () => {
     const [nbPlaces, setNbPlaces] = useState(1);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    
+    // États pour les commentaires
+    const [commentaires, setCommentaires] = useState([]);
+    const [nouveauCommentaire, setNouveauCommentaire] = useState('');
+    const [note, setNote] = useState(5);
+    const [commentaireLoading, setCommentaireLoading] = useState(false);
 
     useEffect(() => {
         fetchEvent();
+        fetchCommentaires();
     }, [id]);
 
     const fetchEvent = async () => {
@@ -28,6 +46,40 @@ const EventDetail = () => {
             console.error('Erreur:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Charger les commentaires
+    const fetchCommentaires = async () => {
+        try {
+            const response = await api.get(`/commentaires/${id}`);
+            setCommentaires(response.data);
+        } catch (error) {
+            console.error('Erreur chargement commentaires:', error);
+        }
+    };
+
+    // Ajouter un commentaire
+    const handleAjouterCommentaire = async (e) => {
+        e.preventDefault();
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        
+        setCommentaireLoading(true);
+        try {
+            await api.post(`/commentaires/${id}`, {
+                commentaire: nouveauCommentaire,
+                note: note
+            });
+            setNouveauCommentaire('');
+            setNote(5);
+            fetchCommentaires();
+        } catch (error) {
+            console.error('Erreur ajout commentaire:', error);
+        } finally {
+            setCommentaireLoading(false);
         }
     };
 
@@ -117,6 +169,87 @@ const EventDetail = () => {
                             <p style={{ color: '#6B3D2E' }}><strong>{t('prix')} :</strong> {event.prix} DH</p>
                             <p style={{ color: '#6B3D2E' }}><strong>{t('places_restantes')} :</strong> {event.places_restantes} / {event.capacite}</p>
                         </div>
+                    </div>
+
+                    {/* Carte Leaflet */}
+                    {event.latitude && event.longitude && (
+                        <div className="mt-4">
+                            <h5 style={{ color: '#6B3D2E', fontFamily: "'Poppins', sans-serif" }}>
+                                📍 Localisation de l'événement
+                            </h5>
+                            <MapContainer
+                                center={[parseFloat(event.latitude), parseFloat(event.longitude)]}
+                                zoom={13}
+                                scrollWheelZoom={false}
+                                style={{ height: '300px', width: '100%', borderRadius: '12px', zIndex: 0 }}
+                            >
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                <Marker position={[parseFloat(event.latitude), parseFloat(event.longitude)]}>
+                                    <Popup>
+                                        {event.titre}<br />{event.lieu}
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
+                        </div>
+                    )}
+
+                    {/* Section Commentaires */}
+                    <div className="mt-5">
+                        <h4 style={{ color: '#C4552A' }}>Avis et commentaires</h4>
+                        
+                        {/* Formulaire d'ajout (si connecté) */}
+                        {isAuthenticated && (
+                            <form onSubmit={handleAjouterCommentaire} className="mb-4 p-3 rounded" style={{ backgroundColor: '#E8C99A' }}>
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>Note</label>
+                                    <select className="form-select" value={note} onChange={(e) => setNote(e.target.value)} style={{ borderColor: '#C4552A' }}>
+                                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                        <option value="4">⭐⭐⭐⭐ Très bien</option>
+                                        <option value="3">⭐⭐⭐ Bien</option>
+                                        <option value="2">⭐⭐ Moyen</option>
+                                        <option value="1">⭐ Décevant</option>
+                                    </select>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold" style={{ color: '#6B3D2E' }}>Votre commentaire</label>
+                                    <textarea 
+                                        className="form-control" 
+                                        rows="3" 
+                                        value={nouveauCommentaire} 
+                                        onChange={(e) => setNouveauCommentaire(e.target.value)}
+                                        placeholder="Partagez votre expérience..."
+                                        required
+                                        style={{ borderColor: '#C4552A' }}
+                                    />
+                                </div>
+                                <button type="submit" className="btn" disabled={commentaireLoading} style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}>
+                                    {commentaireLoading ? 'Envoi...' : 'Publier mon avis'}
+                                </button>
+                            </form>
+                        )}
+                        
+                        {/* Liste des commentaires */}
+                        {commentaires.length === 0 ? (
+                            <p className="text-muted">Soyez le premier à donner votre avis !</p>
+                        ) : (
+                            commentaires.map((com) => (
+                                <div key={com.id_commentaire} className="mb-3 p-3 rounded" style={{ backgroundColor: '#FDF6EE', border: '1px solid #E8C99A' }}>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong style={{ color: '#6B3D2E' }}>{com.utilisateur?.prenom} {com.utilisateur?.nom}</strong>
+                                            <span className="ms-2">
+                                                {'⭐'.repeat(com.note)}{'☆'.repeat(5 - com.note)}
+                                            </span>
+                                        </div>
+                                        <small className="text-muted">{new Date(com.date_commentaire).toLocaleDateString()}</small>
+                                    </div>
+                                    <p className="mt-2 mb-0" style={{ color: '#6B3D2E' }}>{com.commentaire}</p>
+                                </div>
+                            ))
+                        )}
                     </div>
 
                     {/* Boutons Modifier et Supprimer pour admin ou organisateur propriétaire */}

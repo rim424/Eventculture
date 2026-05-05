@@ -4,6 +4,33 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
 import api from '../services/api';
 
+// ✅ IMPORT CHART.JS
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+
 const DashboardAdmin = () => {
     const navigate = useNavigate();
     const { isAuthenticated, hasRole } = useAuth();
@@ -36,6 +63,41 @@ const DashboardAdmin = () => {
         }
     };
 
+    // ✅ Export XML
+    const handleExportXML = async () => {
+        try {
+            const response = await api.get('/export/xml', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(response.data);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'evenements.xml');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            alert('Erreur lors de l\'export');
+        }
+    };
+
+    // ✅ Import XML
+    const handleImportXML = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('fichier', file);
+        
+        try {
+            const response = await api.post('/import/xml', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            alert(response.data.message);
+            window.location.reload();
+        } catch (error) {
+            alert('Erreur lors de l\'import');
+        }
+    };
+
     if (loading) {
         return (
             <div className="text-center mt-5">
@@ -58,6 +120,25 @@ const DashboardAdmin = () => {
     return (
         <div className="container mt-4">
             <h1 className="text-center mb-4" style={{ color: '#C4552A' }}>Dashboard Administrateur</h1>
+
+            {/* ✅ Boutons Import/Export XML */}
+            <div className="row mb-4">
+                <div className="col-12">
+                    <div className="d-flex gap-3">
+                        <button 
+                            className="btn"
+                            onClick={handleExportXML}
+                            style={{ backgroundColor: '#6B3D2E', color: '#FDF6EE', border: 'none', borderRadius: '8px' }}
+                        >
+                            📄 Exporter les événements (XML)
+                        </button>
+                        <label className="btn" style={{ backgroundColor: '#C4552A', color: '#FDF6EE', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                            📂 Importer des événements (XML)
+                            <input type="file" accept=".xml" style={{ display: 'none' }} onChange={handleImportXML} />
+                        </label>
+                    </div>
+                </div>
+            </div>
 
             {/* Cartes de statistiques */}
             <div className="row g-4 mb-5">
@@ -127,75 +208,79 @@ const DashboardAdmin = () => {
                 </div>
             </div>
 
-            {/* Événements par catégorie */}
-            <div className="row mb-4">
-                <div className="col-md-6">
-                    <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
-                        <h5 className="mb-3" style={{ color: '#C4552A' }}>Événements par catégorie</h5>
-                        {stats?.evenements_par_categorie?.length === 0 ? (
-                            <p className="text-muted">Aucune donnée</p>
-                        ) : (
-                            stats?.evenements_par_categorie?.map((cat, index) => (
-                                <div key={index} className="mb-2">
-                                    <div className="d-flex justify-content-between">
-                                        <span style={{ color: '#6B3D2E' }}>{cat.nom}</span>
-                                        <span style={{ color: '#C4552A' }}>{cat.evenements_count}</span>
-                                    </div>
-                                    <div className="progress" style={{ height: '8px' }}>
-                                        <div className="progress-bar" style={{ width: `${(cat.evenements_count / Math.max(...stats.evenements_par_categorie.map(c => c.evenements_count), 1)) * 100}%`, backgroundColor: '#C4552A' }}></div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+            {/* ✅ Graphiques : Histogramme (Bar) + Camembert (Pie) */}
+            {stats?.evenements_par_categorie && stats.evenements_par_categorie.length > 0 && (
+                <div className="row mb-4">
+                    <div className="col-md-6">
+                        <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+                            <h5 className="mb-3" style={{ color: '#C4552A' }}>📊 Événements par catégorie </h5>
+                            <Bar
+                                data={{
+                                    labels: stats.evenements_par_categorie.map(c => c.nom),
+                                    datasets: [{
+                                        label: "Nombre d'événements",
+                                        data: stats.evenements_par_categorie.map(c => c.evenements_count),
+                                        backgroundColor: '#C4552A',
+                                        borderRadius: 8,
+                                    }]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: { legend: { position: 'top' } }
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+                            <h5 className="mb-3" style={{ color: '#C4552A' }}> Répartition par catégorie </h5>
+                            <Pie
+                                data={{
+                                    labels: stats.evenements_par_categorie.map(c => c.nom),
+                                    datasets: [{
+                                        data: stats.evenements_par_categorie.map(c => c.evenements_count),
+                                        backgroundColor: ['#C4552A', '#6B3D2E', '#E8C99A', '#5A8A3A', '#A84420', '#D4A76A'],
+                                    }]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: { legend: { position: 'right' } }
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
-                <div className="col-md-6">
-                    <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
-                        <h5 className="mb-3" style={{ color: '#C4552A' }}>Événements par mois</h5>
-                        {stats?.evenements_par_mois?.length === 0 ? (
-                            <p className="text-muted">Aucune donnée</p>
-                        ) : (
-                            stats?.evenements_par_mois?.map((item, index) => (
-                                <div key={index} className="mb-2">
-                                    <div className="d-flex justify-content-between">
-                                        <span style={{ color: '#6B3D2E' }}>Mois {item.mois}</span>
-                                        <span style={{ color: '#C4552A' }}>{item.total}</span>
-                                    </div>
-                                    <div className="progress" style={{ height: '8px' }}>
-                                        <div className="progress-bar" style={{ width: `${(item.total / Math.max(...stats.evenements_par_mois.map(i => i.total), 1)) * 100}%`, backgroundColor: '#C4552A' }}></div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            </div>
+            )}
 
-            {/* Réservations par mois */}
-            <div className="row mb-4">
-                <div className="col-md-12">
-                    <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
-                        <h5 className="mb-3" style={{ color: '#C4552A' }}>Réservations par mois</h5>
-                        {stats?.reservations_par_mois?.length === 0 ? (
-                            <p className="text-muted">Aucune donnée</p>
-                        ) : (
-                            stats?.reservations_par_mois?.map((item, index) => (
-                                <div key={index} className="mb-2">
-                                    <div className="d-flex justify-content-between">
-                                        <span style={{ color: '#6B3D2E' }}>Mois {item.mois}</span>
-                                        <span style={{ color: '#C4552A' }}>{item.total}</span>
-                                    </div>
-                                    <div className="progress" style={{ height: '8px' }}>
-                                        <div className="progress-bar" style={{ width: `${(item.total / Math.max(...stats.reservations_par_mois.map(i => i.total), 1)) * 100}%`, backgroundColor: '#C4552A' }}></div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+            {/* ✅ Graphique Chart.js – Réservations par mois (courbe) */}
+            {stats?.reservations_par_mois && stats.reservations_par_mois.length > 0 && (
+                <div className="row mb-4">
+                    <div className="col-md-12">
+                        <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
+                            <h5 className="mb-3" style={{ color: '#C4552A' }}>📈 Réservations par mois </h5>
+                            <Line
+                                data={{
+                                    labels: stats.reservations_par_mois.map(item => `Mois ${item.mois}`),
+                                    datasets: [{
+                                        label: 'Nombre de réservations',
+                                        data: stats.reservations_par_mois.map(item => item.total),
+                                        borderColor: '#C4552A',
+                                        backgroundColor: 'rgba(196, 85, 42, 0.1)',
+                                        tension: 0.3,
+                                        fill: true,
+                                    }]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: { legend: { position: 'top' } }
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
-            {/* Top 5 événements et Top 5 organisateurs */}
+            {/* Top 5 événements */}
             <div className="row">
                 <div className="col-md-6 mb-4">
                     <div className="card p-3 shadow-sm" style={{ borderRadius: '12px', border: 'none' }}>
